@@ -1,0 +1,47 @@
+import java.util.HashMap;
+
+/**
+ * An implementation of <tt>Cache</tt> that uses a least-recently-used (LRU)
+ * eviction policy.
+ */
+public class LRUCache<KeyType, ValueType> implements Cache<KeyType, ValueType> 
+{	
+	private final DataProvider _provider;
+	private final int _capacity;
+	private int _misses = 0;
+
+	public LRUCache (DataProvider<KeyType, ValueType> provider, int capacity) 
+	{
+		/*
+		 * @param provider the data provider to consult for a cache miss
+		 * @param capacity the exact number of (key,value) pairs to store in the cache
+		 */
+		_provider = provider;
+		_capacity = capacity;
+	}
+
+	/**
+	 * Returns the value associated with the specified key.
+	 * @param key the key
+	 * @return the value associated with the key
+	 */
+	
+	public LRUCache()
+	{
+		
+	}
+	
+	public ValueType get (KeyType key) 
+	{
+		return null;
+	}
+
+	public int getNumMisses () 
+	{
+		/*
+		 * Returns the number of cache misses since the object's instantiation.
+		 * @return the number of cache misses since the object's instantiation.
+		 */
+		return _misses;
+	}
+}

@@ -1,0 +1,8 @@
+
+public class VirtualDatabase<KeyType, ValueType> implements DataProvider<KeyType, ValueType> 
+{
+	public ValueType get(KeyType key)
+	{
+		return bull;
+	}
+}
