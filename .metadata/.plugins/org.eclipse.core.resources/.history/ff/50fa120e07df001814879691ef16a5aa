@@ -1,5 +1,0 @@
-
-public class VirtualDatabase<KeyType, ValueType> implements DataProvider<KeyType, ValueType> 
-{
-	
-}

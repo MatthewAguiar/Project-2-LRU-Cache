@@ -1,6 +1,5 @@
 
 import java.util.HashMap;
-import java.util.Map;
 
 public class VirtualDatabase<KeyType, ValueType> implements DataProvider<KeyType, ValueType> 
 {
@@ -9,11 +8,10 @@ public class VirtualDatabase<KeyType, ValueType> implements DataProvider<KeyType
 	
 	public VirtualDatabase()
 	{
-		_data.put("smurf", "smurf.png");
-		_data.put("sonic", "sonic.py");
-		_data.put("pikachu", "pikachu.cpp");
 	}
-	
+	/************************************************************************************************************************************************
+	 * Public Methods:
+	 ************************************************************************************************************************************************/
 	public ValueType get(KeyType key)
 	{
 		return _data.get(key);

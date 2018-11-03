@@ -1,6 +1,5 @@
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.LinkedList;
 
 /**
@@ -9,12 +8,12 @@ import java.util.LinkedList;
  */
 public class LRUCache<KeyType, ValueType> implements Cache<KeyType, ValueType> 
 {	
-	private final DataProvider _provider;
 	private final int _capacity;
 	private int _misses = 0;
-	private HashMap<KeyType, ValueType> _data = new HashMap<KeyType, ValueType>();
-	private LinkedList<KeyType> _dataKeys = new LinkedList<KeyType>();
-
+	private final DataProvider<KeyType, ValueType> _provider;
+	private final HashMap<KeyType, ValueType> _data = new HashMap<KeyType, ValueType>();
+	private final LinkedList<KeyType> _listOfKeys = new LinkedList<KeyType>();
+	
 	public LRUCache (DataProvider<KeyType, ValueType> provider, int capacity) 
 	{
 		/*
@@ -24,13 +23,36 @@ public class LRUCache<KeyType, ValueType> implements Cache<KeyType, ValueType>
 		_provider = provider;
 		_capacity = capacity;
 	}
-
+	
+	/************************************************************************************************************************************************
+	 * Private Methods:
+	 ************************************************************************************************************************************************/	
+	private void performEviction()
+	{
+		KeyType keyToRemove = _listOfKeys.getFirst();
+		_data.remove(keyToRemove);
+		_listOfKeys.removeFirst();
+	}
+	
+	private void insertFromProviderToCache(KeyType key)
+	{
+		_data.put(key, _provider.get(key));
+		_listOfKeys.add(key);
+	}
+	
+	private boolean atMaxCapacity()
+	{
+		return _data.size() == _capacity;
+	}
+	/************************************************************************************************************************************************
+	 * Public Methods:
+	 ************************************************************************************************************************************************/
 	/**
 	 * Returns the value associated with the specified key.
 	 * @param key the key
 	 * @return the value associated with the key
 	 */	
-	public ValueType get (KeyType key) 
+	public ValueType get (KeyType key)
 	{
 		if(_data.containsKey(key))
 		{
@@ -38,27 +60,14 @@ public class LRUCache<KeyType, ValueType> implements Cache<KeyType, ValueType>
 		}
 		else
 		{
-			if(_data.size() == _capacity)
+			_misses++;
+			if(atMaxCapacity())
 			{
-				eviction();
-				ValueType value = (ValueType) _provider.get(key);
-				_data.put(key, value);
-				return value;
+				performEviction();
 			}
-			else
-			{
-				ValueType value = (ValueType) _provider.get(key);
-				_dataKeys.add(key);
-				return value;
-			}
+			insertFromProviderToCache(key);			
+			return _provider.get(key);
 		}
-	}
-	
-	public void eviction()
-	{
-		KeyType keyToRemove = _dataKeys.getFirst();
-		_dataKeys.removeFirst();
-		_data.remove(keyToRemove);
 	}
 
 	public int getNumMisses () 
