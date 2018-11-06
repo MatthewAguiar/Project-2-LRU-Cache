@@ -1,0 +1,16 @@
+
+Questions:
+
+1) What if the data being searched for is not found within the data provider? Return null?
+2) Is the VirtualDatabase class we have OK.
+3) Would the tests we have for VirtualDatabase match up against others code?
+4) OK to use LinkedList class?
+5) What is number of misses method for?
+6) Any way to test private methods?
+7) Need a read-me.txt?
+8) Best way to test. AssertEquals.
+9) getStorage() Method for testing?
+10) Why is it best to invoke objects with least strong type?
+11) What should we use for testLeastRecentlyUsed is correct?
+
+

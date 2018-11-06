@@ -1,0 +1,6 @@
+
+public class Node<Type> 
+{
+	private Type _data;
+	
+}

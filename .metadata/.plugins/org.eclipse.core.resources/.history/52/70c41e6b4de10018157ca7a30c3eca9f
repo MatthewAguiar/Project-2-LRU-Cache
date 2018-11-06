@@ -1,0 +1,17 @@
+
+public class LinkedList<Type>
+{
+	private Node<Type> _head, _tail;
+	private int numberOfElements;
+	
+	public LinkedList()
+	{
+		_head = _tail = null;
+		numberOfElements = 0;
+	}
+	
+	public void add()
+	{
+		Node<Type> node = new Node<Type>();
+	}
+}

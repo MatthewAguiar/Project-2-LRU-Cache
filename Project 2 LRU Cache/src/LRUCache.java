@@ -1,6 +1,5 @@
 
 import java.util.HashMap;
-import java.util.LinkedList;
 
 /**
  * An implementation of <tt>Cache</tt> that uses a least-recently-used (LRU)
@@ -11,8 +10,8 @@ public class LRUCache<KeyType, ValueType> implements Cache<KeyType, ValueType>
 	private final int _capacity;
 	private int _misses = 0;
 	private final DataProvider<KeyType, ValueType> _provider;
-	private final HashMap<KeyType, ValueType> _data = new HashMap<KeyType, ValueType>();
-	private final LinkedList<KeyType> _listOfKeys = new LinkedList<KeyType>();
+	private final HashMap<KeyType, Node<ValueType>> _data = new HashMap<KeyType, Node<ValueType>>();
+	private final LinkedList<ValueType> _listOfValues = new LinkedList<ValueType>();
 	
 	public LRUCache (DataProvider<KeyType, ValueType> provider, int capacity) 
 	{
@@ -56,18 +55,24 @@ public class LRUCache<KeyType, ValueType> implements Cache<KeyType, ValueType>
 	{
 		if(_data.containsKey(key))
 		{
-			return _data.get(key);
+			Node<ValueType> nodeFromKey = _data.get(key);
+			_listOfValues.remove(nodeFromKey);
 		}
 		else
 		{
 			_misses++;
 			if(atMaxCapacity())
 			{
-				performEviction();
+				performEviction(); //TODO!!
 			}
 			insertFromProviderToCache(key);			
 			return _provider.get(key);
 		}
+	}
+	
+	public HashMap<KeyType, ValueType> getStorage()
+	{
+		return _data;
 	}
 
 	public int getNumMisses () 

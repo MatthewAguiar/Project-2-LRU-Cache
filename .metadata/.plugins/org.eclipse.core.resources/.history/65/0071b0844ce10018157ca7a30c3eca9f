@@ -1,0 +1,7 @@
+
+import java.util.list;
+
+public class LinkedList<Type> implements List<Type>
+{
+	
+}

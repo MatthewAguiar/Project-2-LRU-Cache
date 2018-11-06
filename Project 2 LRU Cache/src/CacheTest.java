@@ -13,7 +13,7 @@ public class CacheTest
 	DataProvider<String, String> fileDataProvider = new VirtualDatabase<String, String>(new HashMap<String, String>(){{
 		put("Documents/MyImages/vacation.jpg", "vacation.jpg");
 		put("Videos/MyVideos/video.mp4", "video.mp4");
-		put("Videos/Youtube/video.tutorial.mp4", "tutorial.mp4");
+		put("Videos/Youtube/tutorial.mp4", "tutorial.mp4");
 		put("Documents/Cpp/facebuk.cpp", "facebuk.cpp");
 		put("Documents/Python/collatz.py", "collatz.py");
 		put("Documents/Cpp/facebuk.cpp", "facebuk.cpp");
@@ -29,7 +29,13 @@ public class CacheTest
 		put(5, "www.twitter.com");
 	}});
 	
-	Cache<Integer,String> cache = new LRUCache<Integer, String>(webCache, 5);
+	Cache<Integer, String> emptyCache = new LRUCache<Integer, String>(webCache, 4);
+	Cache<Integer, String> cacheWithOneKeyValue  = new LRUCache<Integer, String>(webCache, 4);
+	Cache<Integer, String> fullCache  = new LRUCache<Integer, String>(webCache, 4);
+	
+	
+	
+	
 	
 	@Test
 	public void testGetFileFromDataProvider()
@@ -76,6 +82,46 @@ public class CacheTest
 		/* Explanation: Here, the value of "Documents/MyImages/vacation.jpg" was originally "vacation.jpg",
 		 * but was later replaced with "vacation.jpeg".
 		 */
+	}
+	
+	@Test
+	public void storeDataInEmptyCache()
+	{
+		emptyCache.get(3);
+		HashMap<Integer, String> expectedCacheData = new HashMap<Integer, String>(){{
+			put(3, "www.oracle.com");
+		}};
+		assertEquals(expectedCacheData, emptyCache.getStorage());
+	}
+	
+	@Test
+	public void storeDataInCacheWithDataAlreadyInIt()
+	{
+		cacheWithOneKeyValue.get(3);
+		cacheWithOneKeyValue.get(0);
+		HashMap<Integer, String> expectedCacheData = new HashMap<Integer, String>(){{
+			put(3, "www.oracle.com");
+			put(0, "www.youtube.com");
+		}};
+		assertEquals(expectedCacheData, cacheWithOneKeyValue.getStorage());
+	}
+	
+	@Test
+	public void storeDataInFullCache()
+	{
+		fullCache.get(3);
+		fullCache.get(0);
+		fullCache.get(2);
+		fullCache.get(5);
+		fullCache.get(4);
+		
+		HashMap<Integer, String> expectedEvictedCacheData = new HashMap<Integer, String>(){{
+			put(0, "www.youtube.com");
+			put(2, "www.github.com");
+			put(5, "www.twitter.com");
+			put(4, "www.facebook.com");
+		}};
+		
 	}
 	
 	@Test

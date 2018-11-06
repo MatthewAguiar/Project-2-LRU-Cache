@@ -1,0 +1,85 @@
+
+public class LinkedList<Type>
+{
+	private Node<Type> _head, _tail;
+	private int numberOfElements;
+	
+	public LinkedList()
+	{
+		_head = _tail = null;
+		numberOfElements = 0;
+	}
+	
+	public void add(Type data)
+	{
+		final Node<Type> nodeToAdd = new Node(data, null);
+		
+		if(_head == null)
+		{
+			_head = nodeToAdd;
+			_tail = nodeToAdd;
+		}
+		else
+		{
+			_tail.setNext(nodeToAdd);
+			_tail = nodeToAdd;
+		}
+		
+		numberOfElements++;
+	}
+	
+	public void remove(Node<Type> nodeToRemove)
+	{
+		if(numberOfElements > 0)
+		{
+			if(numberOfElements == 1)
+			{
+				_head = _tail = null;
+			}
+			else if(numberOfElements == 2)
+			{
+				if(_head == nodeToRemove)
+				{
+					_head = _tail;
+					_tail = _head;
+					_head.setNext(null);
+					_tail.setNext(null);
+				}
+				else
+				{
+					
+				}
+			}
+			Node<Type> cursor = _head;
+			Node<Type> cursorPrevious = _head;
+			Node<Type> cursorNext = _head.getNext();
+			for(int i = 0; i < numberOfElements; i++)
+			{
+				if(cursor == nodeToRemove)
+				{
+					cursorPrevious.setNext(cursorNext);
+				}
+					
+				cursorPrevious = cursor;
+				cursor = cursor.getNext();
+				cursorNext = cursor.getNext();
+			}
+		}
+	}
+	
+	/*
+	public void remove(Node<Type> nodeToRemove)
+	{
+		if(_tail == nodeToRemove)
+		{
+			_tail = null;
+			//_tail = _head.getNext();
+		}
+		else
+		{
+			_head = null;
+			_tail = null;
+		}
+	}
+	*/
+}

@@ -1,0 +1,8 @@
+
+public class LinkedList<Type>
+{
+	private Node<Type> _head, _tail;
+	private int numberOfElements;
+	
+	
+}

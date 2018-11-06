@@ -1,0 +1,5 @@
+
+public class LinkedList<Type> implements List<Type>
+{
+	
+}

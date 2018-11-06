@@ -1,0 +1,11 @@
+
+public class Node<Type> 
+{
+	private Type _data;
+	private Node<Type> _next;
+	
+	public Node()
+	{
+		
+	}
+}

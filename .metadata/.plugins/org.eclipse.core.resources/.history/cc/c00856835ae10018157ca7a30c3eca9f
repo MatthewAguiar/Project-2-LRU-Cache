@@ -1,0 +1,54 @@
+
+public class LinkedList<Type>
+{
+	private Node<Type> _head, _tail;
+	private int numberOfElements;
+	
+	public LinkedList()
+	{
+		_head = _tail = null;
+		numberOfElements = 0;
+	}
+	
+	public void add(Type data)
+	{
+		final Node<Type> nodeToAdd = new Node(data, null);
+		
+		if(_head == null)
+		{
+			_head = nodeToAdd;
+			_tail = nodeToAdd;
+		}
+		else
+		{
+			_tail.setNext(nodeToAdd);
+			_tail = nodeToAdd;
+		}
+	}
+	
+	public void remove(Node<Type> nodeToRemove)
+	{
+		Node<Type> cursor = _head;
+		for(int i = 0; i < numberOfElements; i++)
+		{
+			cursor = cursor.getNext();
+			if()
+		}
+	}
+	
+	/*
+	public void remove(Node<Type> nodeToRemove)
+	{
+		if(_tail == nodeToRemove)
+		{
+			_tail = null;
+			//_tail = _head.getNext();
+		}
+		else
+		{
+			_head = null;
+			_tail = null;
+		}
+	}
+	*/
+}
