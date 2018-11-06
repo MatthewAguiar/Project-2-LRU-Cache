@@ -10,6 +10,11 @@ public class Node<Type>
 		_next = next;
 	}
 	
+	public Type getData()
+	{
+		return _data;
+	}
+	
 	public void setNext(Node<Type> node)
 	{
 		_next = node;

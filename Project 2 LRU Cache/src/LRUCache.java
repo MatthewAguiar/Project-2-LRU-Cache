@@ -28,15 +28,14 @@ public class LRUCache<KeyType, ValueType> implements Cache<KeyType, ValueType>
 	 ************************************************************************************************************************************************/	
 	private void performEviction()
 	{
-		KeyType keyToRemove = _listOfKeys.getFirst();
-		_data.remove(keyToRemove);
-		_listOfKeys.removeFirst();
+		_data.values().remove(_listOfValues.getFirst());
+		_listOfValues.remove(_listOfValues.getFirst());
 	}
 	
 	private void insertFromProviderToCache(KeyType key)
 	{
-		_data.put(key, _provider.get(key));
-		_listOfKeys.add(key);
+		_listOfValues.add(_provider.get(key));
+		_data.put(key, _listOfValues.getLast());
 	}
 	
 	private boolean atMaxCapacity()
@@ -57,22 +56,19 @@ public class LRUCache<KeyType, ValueType> implements Cache<KeyType, ValueType>
 		{
 			Node<ValueType> nodeFromKey = _data.get(key);
 			_listOfValues.remove(nodeFromKey);
+			_listOfValues.add(nodeFromKey);
+			return nodeFromKey.getData();
 		}
 		else
 		{
 			_misses++;
 			if(atMaxCapacity())
 			{
-				performEviction(); //TODO!!
+				performEviction();
 			}
 			insertFromProviderToCache(key);			
 			return _provider.get(key);
 		}
-	}
-	
-	public HashMap<KeyType, ValueType> getStorage()
-	{
-		return _data;
 	}
 
 	public int getNumMisses () 

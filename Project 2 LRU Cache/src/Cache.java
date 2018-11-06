@@ -10,5 +10,4 @@ interface Cache<KeyType, ValueType> extends DataProvider<KeyType, ValueType> {
 	 * @return the number of cache misses since the object's instantiation.
 	 */
 	int getNumMisses ();
-	HashMap<KeyType, ValueType> getStorage();
 }

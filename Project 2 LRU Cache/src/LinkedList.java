@@ -12,7 +12,24 @@ public class LinkedList<Type>
 	
 	public void add(Type data)
 	{
-		final Node<Type> nodeToAdd = new Node(data, null);
+		final Node<Type> nodeToAdd = new Node<Type>(data, null);
+		
+		if(_head == null)
+		{
+			_head = nodeToAdd;
+			_tail = nodeToAdd;
+		}
+		else
+		{
+			_tail.setNext(nodeToAdd);
+			_tail = nodeToAdd;
+		}
+		
+		numberOfElements++;
+	}
+	
+	public void add(Node<Type> nodeToAdd)
+	{
 		
 		if(_head == null)
 		{
@@ -30,60 +47,70 @@ public class LinkedList<Type>
 	
 	public void remove(Node<Type> nodeToRemove)
 	{
-		if(numberOfElements > 0)
+		if(_head == nodeToRemove)
 		{
-			if(numberOfElements == 1)
+			switch(numberOfElements)
 			{
-				_head = _tail = null;
-			}
-			else if(numberOfElements == 2)
-			{
-				if(_head == nodeToRemove)
-				{
+				case 1:
+					_head = _tail = null;
+					
+				case 2:
 					_head = _tail;
-					_tail = _head;
-					_head.setNext(null);
-					_tail.setNext(null);
-				}
-				else
-				{
-					_head.setNext(null);
-					_tail = _head;
-				}
-			}
-			else
-			{
-				Node<Type> cursor = _head;
-				Node<Type> cursorPrevious = _head;
-				Node<Type> cursorNext = _head.getNext();
-				for(int i = 0; i < numberOfElements; i++)
-				{
-					if(cursor == nodeToRemove)
-					{
-						cursorNext = cursor;
-					}
-						
-					cursorPrevious = cursor;
-					cursor = cursor.getNext();
-					cursorNext = cursor.getNext();
-				}
+				
+				default:
+					_head = _head.getNext();
+					
 			}
 		}
-	}
-	
-	/*
-	public void remove(Node<Type> nodeToRemove)
-	{
-		if(_tail == nodeToRemove)
+		else if(_tail == nodeToRemove)
 		{
-			_tail = null;
-			//_tail = _head.getNext();
+			switch(numberOfElements)
+			{
+					
+				case 2:
+					_head.setNext(null);
+					_tail = _head;
+				
+				default:
+					
+					Node<Type> cursor = _head;
+					for(int i = 0; i < numberOfElements - 1; i++)
+					{							
+						cursor = cursor.getNext();
+					}	
+					cursor.setNext(null);
+					_tail = cursor;
+			}
 		}
 		else
-		{
-			_head = null;
-			_tail = null;
+		{	
+			Node<Type> cursorPrevious = _head;
+			Node<Type> cursor = _head.getNext();
+			Node<Type> cursorNext = _head.getNext().getNext();
+			for(int i = 0; i < numberOfElements - 1; i++)
+			{
+				if(cursor == nodeToRemove)
+				{
+					cursor.setNext(null);
+					cursorPrevious.setNext(cursorNext);
+					break;
+				}
+				
+				cursorPrevious = cursor;
+				cursor = cursor.getNext();
+				cursorNext = cursor.getNext();
+			}					
 		}
+		numberOfElements--;
 	}
-	*/
+	
+	public Node<Type> getFirst()
+	{
+		return _head;
+	}
+	
+	public Node<Type> getLast()
+	{
+		return _tail;
+	}
 }
