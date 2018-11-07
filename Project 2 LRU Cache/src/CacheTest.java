@@ -9,124 +9,286 @@ import java.util.HashMap;
  */
 public class CacheTest 
 {
+	LinkedHashMap<String, String> emptyLHM = new LinkedHashMap<String, String>();
+	LinkedHashMap<String, String> oneElementLHM = new LinkedHashMap<String, String>(){{
+		put("Matthew", "password123");
+	}};
+
+	LinkedHashMap<String, String> twoElementLHM = new LinkedHashMap<String, String>(){{
+		put("Winnie", "yo478");
+		put("Vignesh", "Popcorn");
+	}};
 	
-	DataProvider<String, String> fileDataProvider = new VirtualDatabase<String, String>(new HashMap<String, String>(){{
-		put("Documents/MyImages/vacation.jpg", "vacation.jpg");
-		put("Videos/MyVideos/video.mp4", "video.mp4");
-		put("Videos/Youtube/tutorial.mp4", "tutorial.mp4");
-		put("Documents/Cpp/facebuk.cpp", "facebuk.cpp");
-		put("Documents/Python/collatz.py", "collatz.py");
-		put("Documents/Cpp/facebuk.cpp", "facebuk.cpp");
-		put("Documents/MyImages/vacation.jpg", "vacation.jpeg");
-	}});
-	
-	DataProvider<Integer, String> webCache = new VirtualDatabase(new HashMap<Integer, String>(){{
-		put(0, "www.youtube.com");
-		put(1, "www.google.com");
-		put(2, "www.github.com");
-		put(3, "www.oracle.com");
-		put(4, "www.facebook.com");
-		put(5, "www.twitter.com");
-	}});
-	
-	Cache<Integer, String> emptyCache = new LRUCache<Integer, String>(webCache, 4);
-	Cache<Integer, String> cacheWithOneKeyValue  = new LRUCache<Integer, String>(webCache, 4);
-	Cache<Integer, String> fullCache  = new LRUCache<Integer, String>(webCache, 4);
-	
-	
-	
-	
+	LinkedHashMap<String, String> manyElementLHM = new LinkedHashMap<String, String>(){{
+		put("Albert", "einstein321");
+		put("Mary", "Popcorn18974");
+		put("Andrew", "cakeismyfavorite9753");
+		put("Amy", "975SfSfLp");
+		put("Johny", "jon123456");
+	}};
 	
 	@Test
-	public void testGetFileFromDataProvider()
+	public void testKeyNotInLHM()
 	{
-		/* This is a basic test that evaluates the following:
-		 * 	- Does the data-provider's "get" method compile.
-		 * 	- Can the "get" method actually get a valid value that is contained within its memory(HashMap). 
-		 */
-		assertEquals("collatz.py", fileDataProvider.get("Documents/Python/collatz.py"));
+		assertEquals(null, emptyLHM.get("Matthew"));
 	}
 	
 	@Test
-	public void testGetFileFromDataProvider2()
+	public void testPutMethodOnHashMapOfSize0()
 	{
-		/* This test evaluates:
-		 * 	- What happens if the user requests a piece of data that dosen't even exist within the provider.
-		 */
-		assertEquals(null, fileDataProvider.get("Documents/C/hello-world.c"));
+		emptyLHM.put("Aaron", "arodgers13897");
+		assertEquals(1, emptyLHM.size()); //Should have been 0 before put.
 	}
 	
 	@Test
-	public void testGetFileFromDataProvider3()
+	public void testPutMethodOnHashMapOfSize0_1()
 	{
-		/* This test evaluates:
-		 * 	- What happens when there are duplicate key value pairs inserted to the data-provider.
-		 */
-		assertEquals("facebuk.cpp", fileDataProvider.get("Documents/Cpp/facebuk.cpp"));
-		/* Explanation: If you attempt to "put" a particular key into a HashMap twice,
-		 *              then the old value associated with the key will be replaced with the new one.
-		 *              In this case, because the pair "Documents/Cpp/facebuk.cpp : facebuk.cpp" was "put" twice into the
-		 *              HashMap, the value of "Documents/Cpp/facebuk.cpp", will be replaced with "facebuk.cpp" which is the
-		 *              exact same as it was before.  
-		 */
+		emptyLHM.put("Aaron", "arodgers13897");
+		assertEquals(true, emptyLHM.get("Aaron") instanceof Node);
+	}
+	
+	@Test
+	public void testPutMethodOnHashMapOfSize0_2()
+	{
+		emptyLHM.put("Aaron", "arodgers13897");
+		assertEquals("arodgers13897", emptyLHM.get("Aaron").getValue());
+	}
+	
+	@Test
+	public void testPutMethodOnHashMapOfSize0_3()
+	{
+		emptyLHM.put("Aaron", "arodgers13897");
+		assertEquals(true, emptyLHM.getLRU() == emptyLHM.getMRU()); //Head should equal tail!
+	}
+	
+	@Test
+	public void testPutMethodOnHashMapOfSize0_4()
+	{
+		emptyLHM.put("Aaron", "arodgers13897");
+		assertEquals(null, emptyLHM.get("Aaron").getPrevious()); 
+	}
+	
+	@Test
+	public void testPutMethodOnHashMapOfSize0_5()
+	{
+		emptyLHM.put("Aaron", "arodgers13897");
+		assertEquals(null, emptyLHM.get("Aaron").getNext());
+	}
+	
+	@Test
+	public void testPutMethodOnHashMapOfSizeGreaterThan0()
+	{
+		assertEquals(5, manyElementLHM.size());
+	}
+	
+	@Test
+	public void testPutMethodOnHashMapOfSizeGreaterThan0_1()
+	{
+		assertEquals(true, manyElementLHM.get("Amy") instanceof Node);
+	}
+	
+	@Test
+	public void testPutMethodOnHashMapOfSizeGreaterThan0_2()
+	{
+		assertEquals("cakeismyfavorite9753", manyElementLHM.get("Andrew").getValue());
+	}
+	
+	@Test
+	public void testPutMethodOnHashMapOfSizeGreaterThan0_3()
+	{
+		Node<String, String> head = manyElementLHM.get("Albert");
+		Node<String, String> node2 = manyElementLHM.get("Mary");
+		Node<String, String> node3 = manyElementLHM.get("Andrew");
+		Node<String, String> node4 = manyElementLHM.get("Amy");
+		Node<String, String> node5 = manyElementLHM.get("Johny");
+		boolean headIsCorrect = (manyElementLHM.getLRU() == head && head.getNext() == node2 && head.getPrevious() == null);
+		boolean node2IsCorrect = (node2.getNext() == node3 && node2.getPrevious() == head);
+		boolean node3IsCorrect = (node3.getNext() == node4 && node3.getPrevious() == node2);
+		boolean node4IsCorrect = (node4.getNext() == node5 && node4.getPrevious() == node3);
+		boolean node5IsCorrect = (manyElementLHM.getMRU() == node5 && node5.getNext() == null && node5.getPrevious() == node4);
 		
+		assertEquals(true, (headIsCorrect && node2IsCorrect && node3IsCorrect && node4IsCorrect && node5IsCorrect));
 	}
 	
 	@Test
-	public void testGetFileFromDataProvider4()
+	public void testRemoveMethodOnHashMapOfSize0()
 	{
-		/* This test evaluates:
-		 * 	- What happens when there is a duplicate key "put" into a HashMap with a different value.
-		 */
-		assertEquals("vacation.jpeg", fileDataProvider.get("Documents/MyImages/vacation.jpg"));
-		/* Explanation: Here, the value of "Documents/MyImages/vacation.jpg" was originally "vacation.jpg",
-		 * but was later replaced with "vacation.jpeg".
-		 */
+		emptyLHM.remove("Winnie");
+		assertEquals(0, emptyLHM.size());
 	}
 	
 	@Test
-	public void storeDataInEmptyCache()
+	public void testRemoveMethodOnHashMapOfSize0_1()
 	{
-		emptyCache.get(3);
-		HashMap<Integer, String> expectedCacheData = new HashMap<Integer, String>(){{
-			put(3, "www.oracle.com");
-		}};
-		assertEquals(expectedCacheData, emptyCache.getStorage());
+		emptyLHM.remove("Anthony");
+		assertEquals(null, emptyLHM.getLRU());
 	}
 	
 	@Test
-	public void storeDataInCacheWithDataAlreadyInIt()
+	public void testRemoveMethodOnHashMapOfSize0_2()
 	{
-		cacheWithOneKeyValue.get(3);
-		cacheWithOneKeyValue.get(0);
-		HashMap<Integer, String> expectedCacheData = new HashMap<Integer, String>(){{
-			put(3, "www.oracle.com");
-			put(0, "www.youtube.com");
-		}};
-		assertEquals(expectedCacheData, cacheWithOneKeyValue.getStorage());
+		emptyLHM.remove("Judy");
+		assertEquals(null, emptyLHM.getMRU());
 	}
 	
 	@Test
-	public void storeDataInFullCache()
+	public void testRemoveMethodOnHashMapOfSize1()
 	{
-		fullCache.get(3);
-		fullCache.get(0);
-		fullCache.get(2);
-		fullCache.get(5);
-		fullCache.get(4);
+		oneElementLHM.remove("Matthew");
+		assertEquals(0, oneElementLHM.size());
+	}
+	
+	@Test
+	public void testRemoveMethodOnHashMapOfSize1_1()
+	{
+		oneElementLHM.remove("Matthew");
+		assertEquals(null, emptyLHM.getLRU());
+	}
+	
+	@Test
+	public void testRemoveMethodOnHashMapOfSize1_2()
+	{
+		oneElementLHM.remove("Matthew");
+		assertEquals(null, emptyLHM.getMRU());
+	}
+	
+	@Test
+	public void testRemoveMethodOnHashMapOfSize2()
+	{
+		twoElementLHM.remove("Winnie");
+		assertEquals(1, twoElementLHM.size());
+	}
+	
+	@Test
+	public void testRemoveMethodOnHashMapOfSize2_1()
+	{
+		twoElementLHM.remove("Winnie");
+		assertEquals(true, (twoElementLHM.getMRU() == twoElementLHM.get("Vignesh")));
+	}
+	
+	@Test
+	public void testRemoveMethodOnHashMapOfSize2_2()
+	{
+		twoElementLHM.remove("Winnie");
+		assertEquals(true, (twoElementLHM.getLRU() == twoElementLHM.getMRU()));
+	}
+	
+	@Test
+	public void testRemoveMethodOnHashMapOfSize2_3()
+	{
+		twoElementLHM.remove("Winnie");
+		assertEquals(true, (twoElementLHM.getMRU().getPrevious() == null &&  twoElementLHM.getMRU().getNext() == null));
+	}
+	
+	@Test
+	public void testRemoveMethodOnHashMapOfSize2_4()
+	{
+		twoElementLHM.remove("Vignesh");
+		assertEquals(true, (twoElementLHM.getMRU() == twoElementLHM.get("Winnie")));
+	}
+	
+	@Test
+	public void testRemoveMethodOnHashMapOfSize2_5()
+	{
+		twoElementLHM.remove("Vignesh");
+		assertEquals(true, (twoElementLHM.getLRU() == twoElementLHM.getMRU()));
+	}
+	
+	@Test
+	public void testRemoveMethodOnHashMapOfSize2_6()
+	{
+		twoElementLHM.remove("Vignesh");
+		assertEquals(true, (twoElementLHM.getMRU().getPrevious() == null &&  twoElementLHM.getMRU().getNext() == null));
+	}
+	
+	@Test
+	public void testRemoveMethodOnHashMapOfSizeGreaterThan2()
+	{
+		manyElementLHM.remove("Albert");
+		assertEquals(4, manyElementLHM.size());
+	}
+	
+	@Test
+	public void testRemoveMethodOnHashMapOfSizeGreaterThan2_1()
+	{
+		Node<String, String> newHead = manyElementLHM.get("Mary");
+		manyElementLHM.remove("Albert");
+		assertEquals(newHead, manyElementLHM.getLRU());
+	}
+	
+	@Test
+	public void testRemoveMethodOnHashMapOfSizeGreaterThan2_2()
+	{
+		manyElementLHM.remove("Albert");
+		assertEquals(null, manyElementLHM.get("Mary").getPrevious());
+	}
+	
+	@Test
+	public void testRemoveMethodOnHashMapOfSizeGreaterThan2_3()
+	{
+		manyElementLHM.remove("Albert");
+		assertEquals(manyElementLHM.get("Andrew"), manyElementLHM.get("Mary").getNext());
+	}
+	
+	@Test
+	public void testRemoveMethodOnHashMapOfSizeGreaterThan2_4()
+	{
+		manyElementLHM.remove("Johny");
+		assertEquals(manyElementLHM.get("Amy"), manyElementLHM.getMRU());
+	}
+	
+	@Test
+	public void testRemoveMethodOnHashMapOfSizeGreaterThan2_5()
+	{
+		manyElementLHM.remove("Johny");
+		assertEquals(manyElementLHM.get("Amy"), manyElementLHM.getMRU());
+	}
+	
+	@Test
+	public void testRemoveMethodOnHashMapOfSizeGreaterThan2_6()
+	{
+		manyElementLHM.remove("Johny");
+		assertEquals(manyElementLHM.get("Andrew"), manyElementLHM.getMRU().getPrevious());
+	}
+	
+	@Test
+	public void testRemoveMethodOnHashMapOfSizeGreaterThan2_7()
+	{
+		manyElementLHM.remove("Johny");
+		assertEquals(null, manyElementLHM.getMRU().getNext());
+	}
+	
+	@Test
+	public void testRemoveMethodOnHashMapOfSizeGreaterThan2_8()
+	{
+		manyElementLHM.remove("Andrew");
 		
-		HashMap<Integer, String> expectedEvictedCacheData = new HashMap<Integer, String>(){{
-			put(0, "www.youtube.com");
-			put(2, "www.github.com");
-			put(5, "www.twitter.com");
-			put(4, "www.facebook.com");
-		}};
+		Node<String, String> head = manyElementLHM.get("Albert");
+		Node<String, String> node2 = manyElementLHM.get("Mary");
+		Node<String, String> node3 = manyElementLHM.get("Andrew");
+		Node<String, String> node4 = manyElementLHM.get("Amy");
+		Node<String, String> node5 = manyElementLHM.get("Johny");
+		boolean headIsCorrect = (manyElementLHM.getLRU() == head && head.getNext() == node2 && head.getPrevious() == null);
+		boolean node2IsCorrect = (node2.getNext() == node4 && node2.getPrevious() == head);
+		boolean node4IsCorrect = (node4.getNext() == node5 && node4.getPrevious() == node2);
+		boolean node5IsCorrect = (manyElementLHM.getMRU() == node5 && node5.getNext() == null && node5.getPrevious() == node4);
 		
+		assertEquals(true, (headIsCorrect && node2IsCorrect && node4IsCorrect && node5IsCorrect));
 	}
 	
-	@Test
-	public void leastRecentlyUsedIsCorrect() 
-	{
-		
-	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

@@ -1,0 +1,294 @@
+import static org.junit.Assert.*;
+import org.junit.BeforeClass;
+import org.junit.Before;
+import org.junit.Test;
+import java.util.HashMap;
+
+/**
+ * Code to test an <tt>LRUCache</tt> implementation.
+ */
+public class CacheTest 
+{
+	LinkedHashMap<String, String> emptyLHM = new LinkedHashMap<String, String>();
+	LinkedHashMap<String, String> oneElementLHM = new LinkedHashMap<String, String>(){{
+		put("Matthew", "password123");
+	}};
+
+	LinkedHashMap<String, String> twoElementLHM = new LinkedHashMap<String, String>(){{
+		put("Winnie", "yo478");
+		put("Vignesh", "Popcorn");
+	}};
+	
+	LinkedHashMap<String, String> manyElementLHM = new LinkedHashMap<String, String>(){{
+		put("Albert", "einstein321");
+		put("Mary", "Popcorn18974");
+		put("Andrew", "cakeismyfavorite9753");
+		put("Amy", "975SfSfLp");
+		put("Johny", "jon123456");
+	}};
+	
+	@Test
+	public void testKeyNotInLHM()
+	{
+		assertEquals(null, emptyLHM.get("Matthew"));
+	}
+	
+	@Test
+	public void testPutMethodOnHashMapOfSize0()
+	{
+		emptyLHM.put("Aaron", "arodgers13897");
+		assertEquals(1, emptyLHM.size()); //Should have been 0 before put.
+	}
+	
+	@Test
+	public void testPutMethodOnHashMapOfSize0_1()
+	{
+		emptyLHM.put("Aaron", "arodgers13897");
+		assertEquals(true, emptyLHM.get("Aaron") instanceof Node);
+	}
+	
+	@Test
+	public void testPutMethodOnHashMapOfSize0_2()
+	{
+		emptyLHM.put("Aaron", "arodgers13897");
+		assertEquals("arodgers13897", emptyLHM.get("Aaron").getValue());
+	}
+	
+	@Test
+	public void testPutMethodOnHashMapOfSize0_3()
+	{
+		emptyLHM.put("Aaron", "arodgers13897");
+		assertEquals(true, emptyLHM.getLRU() == emptyLHM.getMRU()); //Head should equal tail!
+	}
+	
+	@Test
+	public void testPutMethodOnHashMapOfSize0_4()
+	{
+		emptyLHM.put("Aaron", "arodgers13897");
+		assertEquals(null, emptyLHM.get("Aaron").getPrevious()); 
+	}
+	
+	@Test
+	public void testPutMethodOnHashMapOfSize0_5()
+	{
+		emptyLHM.put("Aaron", "arodgers13897");
+		assertEquals(null, emptyLHM.get("Aaron").getNext());
+	}
+	
+	@Test
+	public void testPutMethodOnHashMapOfSizeGreaterThan0()
+	{
+		assertEquals(5, manyElementLHM.size());
+	}
+	
+	@Test
+	public void testPutMethodOnHashMapOfSizeGreaterThan0_1()
+	{
+		assertEquals(true, manyElementLHM.get("Amy") instanceof Node);
+	}
+	
+	@Test
+	public void testPutMethodOnHashMapOfSizeGreaterThan0_2()
+	{
+		assertEquals("cakeismyfavorite9753", manyElementLHM.get("Andrew").getValue());
+	}
+	
+	@Test
+	public void testPutMethodOnHashMapOfSizeGreaterThan0_3()
+	{
+		Node<String, String> head = manyElementLHM.get("Albert");
+		Node<String, String> node2 = manyElementLHM.get("Mary");
+		Node<String, String> node3 = manyElementLHM.get("Andrew");
+		Node<String, String> node4 = manyElementLHM.get("Amy");
+		Node<String, String> node5 = manyElementLHM.get("Johny");
+		boolean headIsCorrect = (manyElementLHM.getLRU() == head && head.getNext() == node2 && head.getPrevious() == null);
+		boolean node2IsCorrect = (node2.getNext() == node3 && node2.getPrevious() == head);
+		boolean node3IsCorrect = (node3.getNext() == node4 && node3.getPrevious() == node2);
+		boolean node4IsCorrect = (node4.getNext() == node5 && node4.getPrevious() == node3);
+		boolean node5IsCorrect = (manyElementLHM.getMRU() == node5 && node5.getNext() == null && node5.getPrevious() == node4);
+		
+		assertEquals(true, (headIsCorrect && node2IsCorrect && node3IsCorrect && node4IsCorrect && node5IsCorrect));
+	}
+	
+	@Test
+	public void testRemoveMethodOnHashMapOfSize0()
+	{
+		emptyLHM.remove("Winnie");
+		assertEquals(0, emptyLHM.size());
+	}
+	
+	@Test
+	public void testRemoveMethodOnHashMapOfSize0_1()
+	{
+		emptyLHM.remove("Anthony");
+		assertEquals(null, emptyLHM.getLRU());
+	}
+	
+	@Test
+	public void testRemoveMethodOnHashMapOfSize0_2()
+	{
+		emptyLHM.remove("Judy");
+		assertEquals(null, emptyLHM.getMRU());
+	}
+	
+	@Test
+	public void testRemoveMethodOnHashMapOfSize1()
+	{
+		oneElementLHM.remove("Matthew");
+		assertEquals(0, oneElementLHM.size());
+	}
+	
+	@Test
+	public void testRemoveMethodOnHashMapOfSize1_1()
+	{
+		oneElementLHM.remove("Matthew");
+		assertEquals(null, emptyLHM.getLRU());
+	}
+	
+	@Test
+	public void testRemoveMethodOnHashMapOfSize1_2()
+	{
+		oneElementLHM.remove("Matthew");
+		assertEquals(null, emptyLHM.getMRU());
+	}
+	
+	@Test
+	public void testRemoveMethodOnHashMapOfSize2()
+	{
+		twoElementLHM.remove("Winnie");
+		assertEquals(1, twoElementLHM.size());
+	}
+	
+	@Test
+	public void testRemoveMethodOnHashMapOfSize2_1()
+	{
+		twoElementLHM.remove("Winnie");
+		assertEquals(true, (twoElementLHM.getMRU() == twoElementLHM.get("Vignesh")));
+	}
+	
+	@Test
+	public void testRemoveMethodOnHashMapOfSize2_2()
+	{
+		twoElementLHM.remove("Winnie");
+		assertEquals(true, (twoElementLHM.getLRU() == twoElementLHM.getMRU()));
+	}
+	
+	@Test
+	public void testRemoveMethodOnHashMapOfSize2_3()
+	{
+		twoElementLHM.remove("Winnie");
+		assertEquals(true, (twoElementLHM.getMRU().getPrevious() == null &&  twoElementLHM.getMRU().getNext() == null));
+	}
+	
+	@Test
+	public void testRemoveMethodOnHashMapOfSize2_4()
+	{
+		twoElementLHM.remove("Vignesh");
+		assertEquals(true, (twoElementLHM.getMRU() == twoElementLHM.get("Winnie")));
+	}
+	
+	@Test
+	public void testRemoveMethodOnHashMapOfSize2_5()
+	{
+		twoElementLHM.remove("Vignesh");
+		assertEquals(true, (twoElementLHM.getLRU() == twoElementLHM.getMRU()));
+	}
+	
+	@Test
+	public void testRemoveMethodOnHashMapOfSize2_6()
+	{
+		twoElementLHM.remove("Vignesh");
+		assertEquals(true, (twoElementLHM.getMRU().getPrevious() == null &&  twoElementLHM.getMRU().getNext() == null));
+	}
+	
+	@Test
+	public void testRemoveMethodOnHashMapOfSizeGreaterThan2()
+	{
+		manyElementLHM.remove("Albert");
+		assertEquals(4, manyElementLHM.size());
+	}
+	
+	@Test
+	public void testRemoveMethodOnHashMapOfSizeGreaterThan2_1()
+	{
+		Node<String, String> newHead = manyElementLHM.get("Mary");
+		manyElementLHM.remove("Albert");
+		assertEquals(newHead, manyElementLHM.getLRU());
+	}
+	
+	@Test
+	public void testRemoveMethodOnHashMapOfSizeGreaterThan2_2()
+	{
+		manyElementLHM.remove("Albert");
+		assertEquals(null, manyElementLHM.get("Mary").getPrevious());
+	}
+	
+	@Test
+	public void testRemoveMethodOnHashMapOfSizeGreaterThan2_3()
+	{
+		manyElementLHM.remove("Albert");
+		assertEquals(manyElementLHM.get("Andrew"), manyElementLHM.get("Mary").getNext());
+	}
+	
+	@Test
+	public void testRemoveMethodOnHashMapOfSizeGreaterThan2_4()
+	{
+		manyElementLHM.remove("Johny");
+		assertEquals(manyElementLHM.get("Amy"), manyElementLHM.getMRU());
+	}
+	
+	@Test
+	public void testRemoveMethodOnHashMapOfSizeGreaterThan2_5()
+	{
+		manyElementLHM.remove("Johny");
+		assertEquals(manyElementLHM.get("Amy"), manyElementLHM.getMRU());
+	}
+	
+	@Test
+	public void testRemoveMethodOnHashMapOfSizeGreaterThan2_6()
+	{
+		manyElementLHM.remove("Johny");
+		assertEquals(manyElementLHM.get("Andrew"), manyElementLHM.getMRU().getPrevious());
+	}
+	
+	@Test
+	public void testRemoveMethodOnHashMapOfSizeGreaterThan2_7()
+	{
+		manyElementLHM.remove("Johny");
+		assertEquals(null, manyElementLHM.getMRU().getNext());
+	}
+	
+	@Test
+	public void testRemoveMethodOnHashMapOfSizeGreaterThan2_8()
+	{
+		Node<String, String> head = manyElementLHM.get("Albert");
+		Node<String, String> node2 = manyElementLHM.get("Mary");
+		Node<String, String> node3 = manyElementLHM.get("Andrew");
+		Node<String, String> node4 = manyElementLHM.get("Amy");
+		Node<String, String> node5 = manyElementLHM.get("Johny");
+		boolean headIsCorrect = (manyElementLHM.getLRU() == head && head.getNext() == node2 && head.getPrevious() == null);
+		boolean node2IsCorrect = (node2.getNext() == node4 && node2.getPrevious() == head);
+		boolean node4IsCorrect = (node4.getNext() == node5 && node4.getPrevious() == node2);
+		boolean node5IsCorrect = (manyElementLHM.getMRU() == node5 && node5.getNext() == null && node5.getPrevious() == node4);
+		
+		
+		manyElementLHM.remove("Andrew");
+		assertEquals(true, manyElementLHM.get("Mary").getNext());
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+}

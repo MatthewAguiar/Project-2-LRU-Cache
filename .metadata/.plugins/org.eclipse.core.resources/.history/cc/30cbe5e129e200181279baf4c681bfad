@@ -1,0 +1,40 @@
+
+public class Node<KeyType, ValueType> 
+{
+	private KeyType _key;
+	private KeyType _key;
+	private Node<Type> _next;
+	private Node<Type> _previous;
+	
+	public Node(Type key, Node<Type> previous, Node<Type> next)
+	{
+		_key = key;
+		_next = next;
+		_previous = previous;
+	}
+	
+	public Type getData()
+	{
+		return _key;
+	}
+	
+	public void setNext(Node<Type> node)
+	{
+		_next = node;
+	}
+	
+	public Node<Type> getNext()
+	{
+		return _next;
+	}
+	
+	public void setPrevious(Node<Type> node)
+	{
+		_previous = node;
+	}
+	
+	public Node<Type> getPrevious()
+	{
+		return _previous;
+	}
+}

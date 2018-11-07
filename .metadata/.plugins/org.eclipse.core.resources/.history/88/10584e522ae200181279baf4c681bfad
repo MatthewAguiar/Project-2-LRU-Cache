@@ -1,0 +1,41 @@
+
+public class Node<KeyType, ValueType> 
+{
+	private KeyType _hashKey;
+	private ValueType _hashValue;
+	private Node<KeyType, ValueType> _next;
+	private Node<KeyType, ValueType> _previous;
+	
+	public Node(KeyType hashKey, ValueType hashValue, Node<KeyType, ValueType> previous, Node<KeyType, ValueType> next)
+	{
+		_hashKey = hashKey;
+		_hashValue = hashValue;
+		_next = next;
+		_previous = previous;
+	}
+	
+	public Type getData()
+	{
+		return _key;
+	}
+	
+	public void setNext(Node<Type> node)
+	{
+		_next = node;
+	}
+	
+	public Node<Type> getNext()
+	{
+		return _next;
+	}
+	
+	public void setPrevious(Node<Type> node)
+	{
+		_previous = node;
+	}
+	
+	public Node<Type> getPrevious()
+	{
+		return _previous;
+	}
+}

@@ -1,6 +1,3 @@
-
-import java.util.HashMap;
-
 /**
  * An implementation of <tt>Cache</tt> that uses a least-recently-used (LRU)
  * eviction policy.
@@ -27,12 +24,13 @@ public class LRUCache<KeyType, ValueType> implements Cache<KeyType, ValueType>
 	 ************************************************************************************************************************************************/	
 	private void performEviction()
 	{
-		_data.remove(_data.getFirst());
+		KeyType key = _data.getLRU().getHashKey();
+		_data.remove(key);
 	}
 	
 	private void insertFromProviderToCache(KeyType key)
 	{
-		_data.add(key, _provider.get(key));
+		_data.put(key, _provider.get(key));
 	}
 	
 	private boolean atMaxCapacity()
@@ -51,10 +49,10 @@ public class LRUCache<KeyType, ValueType> implements Cache<KeyType, ValueType>
 	{
 		if(_data.containsKey(key))
 		{
-			Node<ValueType> nodeFromKey = _data.get(key);
-			_listOfValues.remove(nodeFromKey);
-			_listOfValues.add(nodeFromKey);
-			return nodeFromKey.getData();
+			ValueType value = _data.get(key).getValue();
+			_data.remove(key);
+			_data.put(key, value);
+			return value;
 		}
 		else
 		{

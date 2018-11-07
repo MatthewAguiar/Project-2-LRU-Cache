@@ -1,0 +1,79 @@
+
+import java.util.HashMap;
+
+/**
+ * An implementation of <tt>Cache</tt> that uses a least-recently-used (LRU)
+ * eviction policy.
+ */
+public class LRUCache<KeyType, ValueType> implements Cache<KeyType, ValueType> 
+{	
+	private final int _capacity;
+	private int _misses = 0;
+	private final DataProvider<KeyType, ValueType> _provider;
+	private final LinkedHashMap<KeyType, ValueType> _data = new LinkedHashMap<KeyType, ValueType>();
+	
+	public LRUCache (DataProvider<KeyType, ValueType> provider, int capacity) 
+	{
+		/*
+		 * @param provider the data provider to consult for a cache miss
+		 * @param capacity the exact number of (key, value) pairs to store in the cache
+		 */
+		_provider = provider;
+		_capacity = capacity;
+	}
+	
+	/************************************************************************************************************************************************
+	 * Private Methods:
+	 ************************************************************************************************************************************************/	
+	private void performEviction()
+	{
+		_data.remove(_data.getFirst().getKey());
+	}
+	
+	private void insertFromProviderToCache(KeyType key)
+	{
+		_data.put(key, _provider.get(key));
+	}
+	
+	private boolean atMaxCapacity()
+	{
+		return _data.size() == _capacity;
+	}
+	/************************************************************************************************************************************************
+	 * Public Methods:
+	 ************************************************************************************************************************************************/
+	/**
+	 * Returns the value associated with the specified key.
+	 * @param key the key
+	 * @return the value associated with the key
+	 */	
+	public ValueType get (KeyType key)
+	{
+		if(_data.containsKey(key))
+		{
+			Node<KeyType, ValueType> nodeFromKey = _data.get(key);
+			ValueType value = nodeFromKey.getValue();
+			_data.remove(key);
+			return value;
+		}
+		else
+		{
+			_misses++;
+			if(atMaxCapacity())
+			{
+				performEviction();
+			}
+			insertFromProviderToCache(key);			
+			return _provider.get(key);
+		}
+	}
+
+	public int getNumMisses () 
+	{
+		/*
+		 * Returns the number of cache misses since the object's instantiation.
+		 * @return the number of cache misses since the object's instantiation.
+		 */
+		return _misses;
+	}
+}

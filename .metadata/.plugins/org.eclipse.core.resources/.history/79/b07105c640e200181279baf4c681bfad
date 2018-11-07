@@ -1,0 +1,96 @@
+import java.util.HashMap;
+
+public class LinkedHashMap<KeyType, ValueType>
+{
+	private final HashMap<KeyType, Node<KeyType, ValueType>> _map = new HashMap<KeyType, Node<KeyType, ValueType>>();
+	private Node<KeyType, ValueType> _head, _tail;
+	private int _numberOfElements;
+	
+	public LinkedHashMap()
+	{
+		_head = _tail = null;
+		_numberOfElements = 0;
+	}
+	
+	public void put(KeyType key, ValueType value)
+	{
+		final Node<KeyType, ValueType> nodeToAdd = new Node<KeyType, ValueType>(key, value, _tail, null);
+		
+		if(_head == null)
+		{
+			_head = nodeToAdd;
+			_tail = nodeToAdd;	
+		}
+		else
+		{
+			_tail.setNext(nodeToAdd);
+			_tail = nodeToAdd;
+		}
+		
+		_map.put(key, nodeToAdd);
+		_numberOfElements++;
+	}
+	
+	public void remove(KeyType key)
+	{
+		Node<KeyType, ValueType> nodeToFind = _map.get(key);
+		
+		if(nodeToFind != null)
+		{
+		if(nodeToFind.getNext() == null && nodeToFind.getPrevious() == null)
+		{
+			_head = _tail = null;
+		}
+		else if(nodeToFind.getPrevious() == null)
+		{
+			_head = _head.getNext();
+			_head.setPrevious(null);
+		}
+		else if(nodeToFind.getNext() == null)
+		{
+			_tail = _tail.getPrevious();
+			_tail.setNext(null);
+		}
+		else
+		{
+			nodeToFind.getPrevious().setNext(nodeToFind.getNext());
+			nodeToFind.getNext().setPrevious(nodeToFind.getPrevious());
+		}
+
+		_map.remove(key);
+		_numberOfElements--;
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	public Node<KeyType, ValueType> getLRU()
+	{
+		return _head;
+	}
+	
+	public Node<KeyType, ValueType> getMRU()
+	{
+		return _tail;
+	}
+	
+	public boolean containsKey(KeyType key)
+	{
+		return _map.containsKey(key);
+	}
+	
+	public int size()
+	{
+		return _numberOfElements;
+	}
+	
+	public Node<KeyType, ValueType> get(KeyType key)
+	{
+		return _map.get(key);
+	}
+}
