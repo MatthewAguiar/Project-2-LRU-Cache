@@ -1,0 +1,119 @@
+import java.util.HashMap;
+
+public class LinkedHashMap<KeyType, ValueType>
+{
+	private final HashMap<KeyType, Node<ValueType>> _map = new HashMap<KeyType, Node<ValueType>>();
+	private Node<ValueType> _head, _tail;
+	private int numberOfElements;
+	
+	public LinkedHashMap()
+	{
+		_head = _tail = null;
+		numberOfElements = 0;
+	}
+	
+	public void add(KeyType key, ValueType data)
+	{
+		final Node<ValueType> nodeToAdd = new Node<ValueType>(data, null);
+		
+		if(_head == null)
+		{
+			_head = nodeToAdd;
+			_tail = nodeToAdd;
+			
+		}
+		else
+		{
+			_tail.setNext(nodeToAdd);
+			_tail = nodeToAdd;
+		}
+		
+		numberOfElements++;
+	}
+	
+	public void add(Node<ValueType> nodeToAdd)
+	{
+		
+		if(_head == null)
+		{
+			_head = nodeToAdd;
+			_tail = nodeToAdd;
+		}
+		else
+		{
+			_tail.setNext(nodeToAdd);
+			_tail = nodeToAdd;
+		}
+		
+		numberOfElements++;
+	}
+	
+	public void remove(Node<ValueType> nodeToRemove)
+	{
+		if(_head == nodeToRemove)
+		{
+			switch(numberOfElements)
+			{
+				case 1:
+					_head = _tail = null;
+					
+				case 2:
+					_head = _tail;
+				
+				default:
+					_head = _head.getNext();
+					
+			}
+		}
+		else if(_tail == nodeToRemove)
+		{
+			switch(numberOfElements)
+			{
+					
+				case 2:
+					_head.setNext(null);
+					_tail = _head;
+				
+				default:
+					
+					Node<ValueType> cursor = _head;
+					for(int i = 0; i < numberOfElements - 1; i++)
+					{							
+						cursor = cursor.getNext();
+					}	
+					cursor.setNext(null);
+					_tail = cursor;
+			}
+		}
+		else
+		{	
+			Node<ValueType> cursorPrevious = _head;
+			Node<ValueType> cursor = _head.getNext();
+			Node<ValueType> cursorNext = _head.getNext().getNext();
+			for(int i = 0; i < numberOfElements - 1; i++)
+			{
+				if(cursor == nodeToRemove)
+				{
+					cursor.setNext(null);
+					cursorPrevious.setNext(cursorNext);
+					break;
+				}
+				
+				cursorPrevious = cursor;
+				cursor = cursor.getNext();
+				cursorNext = cursor.getNext();
+			}					
+		}
+		numberOfElements--;
+	}
+	
+	public Node<ValueType> getFirst()
+	{
+		return _head;
+	}
+	
+	public Node<ValueType> getLast()
+	{
+		return _tail;
+	}
+}

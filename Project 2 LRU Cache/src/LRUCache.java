@@ -10,8 +10,7 @@ public class LRUCache<KeyType, ValueType> implements Cache<KeyType, ValueType>
 	private final int _capacity;
 	private int _misses = 0;
 	private final DataProvider<KeyType, ValueType> _provider;
-	private final HashMap<KeyType, Node<ValueType>> _data = new HashMap<KeyType, Node<ValueType>>();
-	private final LinkedList<ValueType> _listOfValues = new LinkedList<ValueType>();
+	private final LinkedHashMap<KeyType, ValueType> _data = new LinkedHashMap<KeyType, ValueType>();
 	
 	public LRUCache (DataProvider<KeyType, ValueType> provider, int capacity) 
 	{
@@ -28,14 +27,12 @@ public class LRUCache<KeyType, ValueType> implements Cache<KeyType, ValueType>
 	 ************************************************************************************************************************************************/	
 	private void performEviction()
 	{
-		_data.values().remove(_listOfValues.getFirst());
-		_listOfValues.remove(_listOfValues.getFirst());
+		_data.remove(_data.getFirst());
 	}
 	
 	private void insertFromProviderToCache(KeyType key)
 	{
-		_listOfValues.add(_provider.get(key));
-		_data.put(key, _listOfValues.getLast());
+		_data.add(key, _provider.get(key));
 	}
 	
 	private boolean atMaxCapacity()

@@ -1,0 +1,126 @@
+import java.util.HashMap;
+
+public class LinkedHashMap<KeyType, ValueType>
+{
+	private final HashMap<KeyType, Node<ValueType>> _map = new HashMap<KeyType, Node<ValueType>>();
+	private Node<ValueType> _head, _tail;
+	private int _numberOfElements;
+	
+	public LinkedHashMap()
+	{
+		_head = _tail = null;
+		_numberOfElements = 0;
+	}
+	
+	public void add(KeyType key, ValueType value)
+	{
+		final Node<ValueType> nodeToAdd = new Node<ValueType>(value, _tail, null);
+		
+		if(_head == null)
+		{
+			_head = nodeToAdd;
+			_tail = nodeToAdd;	
+		}
+		else
+		{
+			_tail.setNext(nodeToAdd);
+			_tail = nodeToAdd;
+		}
+		
+		_map.put(key, nodeToAdd);
+		_numberOfElements++;
+	}
+	
+	public void add(KeyType key, Node<ValueType> nodeToAdd)
+	{
+		nodeToAdd.setPrevious(_tail);
+		if(_head == null)
+		{
+			_head = nodeToAdd;
+			_tail = nodeToAdd;
+		}
+		else
+		{
+			_tail.setNext(nodeToAdd);
+			_tail = nodeToAdd;
+		}
+		
+		_map.put(key, nodeToAdd);
+		_numberOfElements++;
+	}
+	
+	public void remove(KeyType key)
+	{
+		if(_head == _map.get(key))
+		{
+			switch(_numberOfElements)
+			{
+				case 1:
+					_head = _tail = null;
+					
+				case 2:
+					_head = _tail;
+				
+				default:
+					_head = _head.getNext();
+					
+			}
+		}
+		else if(_tail == _map.get(key))
+		{
+			switch(_numberOfElements)
+			{
+					
+				case 2:
+					_head.setNext(null);
+					_tail = _head;
+				
+				default:
+					
+					_tail = _tail.getPrevious();
+					_tail.setNext(null);
+			}
+		}
+		else
+		{
+			Node<ValueType> cursorPrevious = _head;
+			Node<ValueType> cursor = _head.getNext();
+			Node<ValueType> cursorNext = _head.getNext().getNext();
+			for(int i = 0; i < _numberOfElements - 1; i++)
+			{
+				if(cursor == _map.get(key))
+				{
+					cursor.setNext(null);
+					cursorPrevious.setNext(cursorNext);
+					break;
+				}
+				
+				cursorPrevious = cursor;
+				cursor = cursor.getNext();
+				cursorNext = cursor.getNext();
+			}					
+		}
+		_map.remove(key);
+		_numberOfElements--;
+	}
+	
+	public Node<ValueType> getFirst()
+	{
+		return _head;
+	}
+	
+	public Node<ValueType> getLast()
+	{
+		return _tail;
+	}
+	
+	public boolean containsKey(KeyType key)
+	{
+		return _map.containsKey(key);
+	}
+	
+	public int size()
+	{
+		return _map.size();
+	}
+}

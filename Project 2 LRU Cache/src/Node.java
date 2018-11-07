@@ -3,11 +3,13 @@ public class Node<Type>
 {
 	private Type _data;
 	private Node<Type> _next;
+	private Node<Type> _previous;
 	
-	public Node(Type data, Node<Type> next)
+	public Node(Type data, Node<Type> previous, Node<Type> next)
 	{
 		_data = data;
 		_next = next;
+		_previous = previous;
 	}
 	
 	public Type getData()
@@ -23,5 +25,15 @@ public class Node<Type>
 	public Node<Type> getNext()
 	{
 		return _next;
+	}
+	
+	public void setPrevious(Node<Type> node)
+	{
+		_previous = node;
+	}
+	
+	public Node<Type> getPrevious()
+	{
+		return _previous;
 	}
 }
