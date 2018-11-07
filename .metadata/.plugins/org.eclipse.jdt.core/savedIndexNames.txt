@@ -14,7 +14,6 @@ INDEX VERSION 1.131+C:\Users\aniartist\Documents\Project-2-LRU-Cache\.metadata\.
 1703361771.index
 991674551.index
 72535324.index
-551342017.index
 2857209468.index
 1394848873.index
 1180489742.index
